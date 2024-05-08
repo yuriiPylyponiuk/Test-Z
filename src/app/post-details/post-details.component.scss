@@ -1,0 +1,23 @@
+.post-item{
+  width: 20vw;
+  height: 70px;
+  border: 1px solid;
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  border-width: 3px;
+  border-color: #36300c;
+  box-shadow: 2px 10px 20px 1px rgba(0,0,0,1);
+  transition: .5s;
+  cursor: pointer;
+  user-select: none;
+  padding: 15px 10px;
+  
+  &:hover {
+    transform: translateY(5px);
+    box-shadow: 2px 10px 25px 1px rgba(0,0,0,1);  
+  }
+}
