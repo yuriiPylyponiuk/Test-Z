@@ -1,32 +1,56 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import {
-  Keys,
   Post,
   PostDetailsComponent,
+  PostKey,
 } from '../post-details/post-details.component';
-import { PostSquareComponent } from '../post-square/post-square.component';
+import { selectId } from '../reducers/post-list/post-list.selectors';
 import { PostService } from '../services/post.service';
 
 @Component({
   selector: 'app-post-list',
   standalone: true,
   templateUrl: './post-list.component.html',
-  styleUrl: './post-list.component.scss',
-  imports: [PostSquareComponent, PostDetailsComponent, CommonModule],
+  styleUrls: ['./post-list.component.scss'],
+  imports: [PostDetailsComponent, CommonModule],
 })
-export class PostListComponent {
-  activePost!: Post;
-  property: Keys = 'title';
-  posts!: Post[];
+export class PostListComponent implements OnInit, OnDestroy {
+  id$?: Observable<number>;
 
-  constructor(private postService: PostService) {}
+  activePost?: Post;
+  property: PostKey = 'title';
+  posts: Post[] = [];
+  private subscriptions: Subscription = new Subscription();
+
+  constructor(private postService: PostService, private store: Store) {
+    this.id$ = this.store.select(selectId);
+  }
 
   isActivePost(post: Post): boolean {
-    return this.activePost === post;
+    return this.activePost?.id === post.id;
   }
 
   ngOnInit(): void {
-    this.postService.getPosts().subscribe((posts) => (this.posts = posts));
+    this.subscriptions.add(
+      this.postService
+        .getPosts()
+        .pipe(
+          catchError((err) =>
+            throwError(() => new Error('Failed to load posts: ' + err.message))
+          )
+        )
+        .subscribe({
+          next: (posts) => (this.posts = posts),
+          error: (err) => console.error(err),
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

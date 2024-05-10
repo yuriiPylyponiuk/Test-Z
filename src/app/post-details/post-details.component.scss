@@ -1,6 +1,7 @@
 .post-item{
-  width: 20vw;
-  height: 70px;
+  width: 8vw;
+  height: 140px;
+  margin-top: 5px;
   border: 1px solid;
   text-align: center;
   overflow: hidden;
@@ -8,16 +9,50 @@
   justify-content: center;
   align-items: center;
   border-radius: 15px;
-  border-width: 3px;
+  border-width: 2px;
   border-color: #36300c;
-  box-shadow: 2px 10px 20px 1px rgba(0,0,0,1);
-  transition: .5s;
+  box-shadow: 1px 10px 20px 1px rgba(0,0,0,1);
+  transition: .7s;
   cursor: pointer;
   user-select: none;
+  font-size: 20px;
   padding: 15px 10px;
   
   &:hover {
     transform: translateY(5px);
-    box-shadow: 2px 10px 25px 1px rgba(0,0,0,1);  
+    box-shadow: 1px 10px 25px 1px rgba(0,0,0,1);  
+    color: #ffdb3a;
+    z-index: 10;
   }
 }
+
+.card1 {
+  position: relative;
+  text-decoration: none;
+  z-index: 0;
+  overflow: hidden;
+
+  &:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -16px;
+    right: -16px;
+    background: #00838d;
+    height: 32px;
+    width: 32px;
+    border-radius: 32px;
+    transform: scale(1);
+    transform-origin: 50% 50%;
+    transition: transform 0.25s ease-out;
+  }
+
+  &:hover:before {
+    transform: scale(30);
+  }
+
+  .subBlock{
+    background-color: transparent;
+  }
+}
+

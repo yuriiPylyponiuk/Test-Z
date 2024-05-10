@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Post } from '../../post-details/post-details.component';
-import { increment, reset, setId, setPosts } from './post-list.action';
+import { increment, reset, setId } from './post-list.action';
 
 export interface PostList {
   count: number;
@@ -14,7 +14,7 @@ export const initialState: PostList = {
   posts: [],
 };
 
-export const todoReduceer = createReducer(
+export const postReduceer = createReducer(
   initialState,
   on(increment, (state) => ({
     ...state,

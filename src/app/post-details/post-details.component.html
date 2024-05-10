@@ -1,6 +1,6 @@
-<div *ngIf="currentLabel" class="post-item" (click)="togglePostDetails()">
-  <div *ngIf="(id$ | async) === post.id && (count$ | async) as count; else elseBlock">{{ currentLabel[count] }}</div>
+<div *ngIf="currentLabel" class="post-item card1" (click)="togglePostDetails()">
+  <div class="subBlock" *ngIf="(id$ | async) === post.id && (count$ | async) as count; else elseBlock">{{ currentLabel[count] }}</div>
   <ng-template #elseBlock>
-    <div>{{ post.title }}</div>
+    <div class="subBlock">{{ post.title }}</div>
   </ng-template>
 </div>

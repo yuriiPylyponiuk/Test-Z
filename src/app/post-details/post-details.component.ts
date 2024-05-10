@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {
   increment,
   reset,
@@ -18,40 +18,51 @@ export interface Post {
   title: string;
   body: string;
 }
-type PostType = number | string;
-export type Keys = 'userId' | 'id' | 'title' | 'body';
-const order = ['title', 'id', 'userId', 'body'];
+
+export type PostKey = keyof Post;
 
 @Component({
   selector: 'app-post-details',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './post-details.component.html',
-  styleUrl: './post-details.component.scss',
+  styleUrls: ['./post-details.component.scss'],
 })
-export class PostDetailsComponent {
+export class PostDetailsComponent implements OnInit, OnDestroy {
   @Input() post!: Post;
-  @Input() property!: Keys;
+  @Input() property!: PostKey;
   @Input() active!: boolean;
 
-  count$?: Observable<number>;
-  id$?: Observable<number>;
+  count$!: Observable<number>;
+  id$!: Observable<number>;
+  currentLabel!: string[];
 
-  currentLabel: PostType[] | undefined;
-
-  ngOnInit() {
-    this.currentLabel = order.map((key) => this.post[key as keyof Post]);
-  }
+  private idSubscription?: Subscription;
+  private static readonly order: PostKey[] = ['title', 'id', 'userId', 'body'];
 
   constructor(private store: Store) {
     this.count$ = this.store.select(selectCount);
     this.id$ = this.store.select(selectId);
   }
 
+  ngOnInit() {
+    this.currentLabel = PostDetailsComponent.order.map(
+      (key) => this.post[key]?.toString() || ''
+    );
+  }
+
+  ngOnDestroy() {
+    this.idSubscription?.unsubscribe();
+  }
+
   togglePostDetails() {
     this.store.dispatch(setId({ id: this.post.id }));
 
-    this.id$?.subscribe((id) => {
+    if (this.idSubscription) {
+      this.idSubscription.unsubscribe();
+    }
+
+    this.idSubscription = this.id$.subscribe((id) => {
       if (id === this.post.id) {
         this.store.dispatch(increment());
       } else if (id !== this.post.id && id !== 0) {

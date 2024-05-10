@@ -17,5 +17,5 @@ import { PostListComponent } from './post-list/post-list.component';
   ],
 })
 export class AppComponent {
-  title = 'zivver';
+  title = 'test';
 }
